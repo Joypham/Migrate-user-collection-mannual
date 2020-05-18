@@ -1,1 +1,9 @@
-Tui quên rồi, tự nghĩ đi
+-- Tui quên rồi, tự nghĩ đi
+
+UPDATE videos_youtubeurl
+set
+YoutubeURL= CONCAT('https://www.youtube.com/watch?v=',YOUTUBEID)
+where
+YOUTUBEID is not  null
+and
+YoutubeURL is null
