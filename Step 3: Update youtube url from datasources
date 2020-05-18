@@ -1,0 +1,27 @@
+UPDATE videos_youtubeurl
+Join 
+(
+SELECT 
+videos.CreatedAt,
+videos.id,
+videos_youtubeurl.YOUTUBEID,
+videos_youtubeurl.FILENAME_REFORMAT,
+SUBSTRING_INDEX(SUBSTRING_INDEX(FILENAME_REFORMAT,'_',-1),'.',1) as datasourceid,
+datasources.SourceURI
+from videos_youtubeurl
+join videos on videos.id = videos_youtubeurl.VideoId
+LEFT JOIN datasources on datasources.id = SUBSTRING_INDEX(SUBSTRING_INDEX(FILENAME_REFORMAT,'_',-1),'.',1) and datasources.Valid =1
+where
+(
+youtubeurl is null
+OR
+youtubeurl = ''
+)
+and
+LENGTH(FILENAME_REFORMAT) = 42
+ORDER BY 
+videos.CreatedAt DESC
+) as t1 
+on t1.id = videos_youtubeurl.VideoId
+set
+videos_youtubeurl.youtubeurl = t1.SourceURI
