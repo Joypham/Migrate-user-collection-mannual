@@ -1,9 +1,28 @@
 -- Tui quên rồi, tự nghĩ đi
 
 UPDATE videos_youtubeurl
-set
-YoutubeURL= CONCAT('https://www.youtube.com/watch?v=',YOUTUBEID)
-where
-YOUTUBEID is not  null
-and
-YoutubeURL is null
+join (
+SELECT
+	*,
+	CONCAT(
+		"https://www.youtube.com/watch?v=",
+	IF
+		(
+			LEFT ( RIGHT ( FILENAME_REFORMAT, LENGTH( FILENAME_REFORMAT )- 8 ), 3 )= '___',
+			SUBSTRING_INDEX( RIGHT ( FILENAME_REFORMAT, LENGTH( FILENAME_REFORMAT )- 8 ), "___", 2 ),
+			SUBSTRING_INDEX( RIGHT ( FILENAME_REFORMAT, LENGTH( FILENAME_REFORMAT )- 8 ), "___", 1 ) 
+		) 
+	) AS youtube_url 
+FROM
+	videos_youtubeurl 
+WHERE
+	youtubeurl IS NULL 
+-- 	AND
+-- 	VideoId = '0'
+HAVING
+	LENGTH( youtube_url ) = 43
+	) as joy_xinh
+ON videos_youtubeurl.VideoId = joy_xinh.VideoId
+SET
+videos_youtubeurl.youtubeurl = joy_xinh.youtube_url
+
