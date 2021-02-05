@@ -1,4 +1,3 @@
--- Tui quên rồi, tự nghĩ đi
 
 UPDATE videos_youtubeurl
 join (
